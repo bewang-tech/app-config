@@ -61,6 +61,8 @@ repositories {
 
 dependencies {
     compile "com.typesafe:config:1.2.1"
+    compile "org.scala-lang:scala-library:$scalaVersion"
+    compile "org.scala-lang:scala-reflect:$scalaVersion"
 
     testCompile "org.scalatest:scalatest_$scalaMajor:2.2.6"
     testCompile "org.scalacheck:scalacheck_$scalaMajor:1.12.5"
