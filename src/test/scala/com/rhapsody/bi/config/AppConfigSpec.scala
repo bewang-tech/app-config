@@ -30,8 +30,11 @@ class AppConfigSpec extends WordSpec with Matchers {
       "the value is Duration" in {
         appConf("my-app { interval = 5m }").interval.duration(TimeUnit.SECONDS) should be(300)
       }
+      "the value is Size" in {
+        appConf("my-app { maxSize = 5m }").maxSize.size should be(5 * 1024 * 1024)
+      }
       "the value is a list of strings" in {
-        val result = appConf("my-app { topics = [ topic-1, topic-2 ] }").topics.strings 
+        val result = appConf("my-app { topics = [ topic-1, topic-2 ] }").topics.strings
         result should contain allOf("topic-1", "topic-2")
       }
       "the key is not valid identifier" in {
@@ -42,7 +45,8 @@ class AppConfigSpec extends WordSpec with Matchers {
 
     "get a nested config value" when {
       "the value is String" in {
-        appConf("""my-app {
+        appConf(
+          """my-app {
           country {
             US {
               WA {
@@ -53,7 +57,8 @@ class AppConfigSpec extends WordSpec with Matchers {
         }""").country.US.WA.region.string should be("NW")
       }
       "the value is Int" in {
-        appConf("""my-app {
+        appConf(
+          """my-app {
           year {
             artists {
               join.task {
@@ -64,7 +69,8 @@ class AppConfigSpec extends WordSpec with Matchers {
         }""").year.artists.join.task.nparts.int should be(15)
       }
       "the value is Long" in {
-        appConf("""my-app {
+        appConf(
+          """my-app {
           country {
             US {
               WA {
@@ -75,7 +81,8 @@ class AppConfigSpec extends WordSpec with Matchers {
         }""").country.US.WA.population.long should be(15L)
       }
       "the value is Boolean" in {
-        appConf("""my-app {
+        appConf(
+          """my-app {
           year {
             artists {
               recompute = false
@@ -93,7 +100,8 @@ class AppConfigSpec extends WordSpec with Matchers {
       }
       "the nested field doesn't exist" in {
         an[AppConfigException] should be thrownBy
-          appConf("""my-app {
+          appConf(
+            """my-app {
             country {
               US {
                 north-west {
@@ -110,7 +118,8 @@ class AppConfigSpec extends WordSpec with Matchers {
         appConf("my-app { country = US }").country.path should be("my-app.country")
       }
       "the config is nested" in {
-        appConf("""my-app {
+        appConf(
+          """my-app {
           year {
             artists {
               join.task {

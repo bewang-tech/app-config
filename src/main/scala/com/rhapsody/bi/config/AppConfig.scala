@@ -17,6 +17,7 @@ trait AppConfig extends Dynamic {
   def long: Long = error
   def bool: Boolean = error
   def duration(unit: TimeUnit): Long = error
+  def size: Long = error
   
   def strings: Seq[String] = error
 
@@ -53,6 +54,7 @@ object AppConfig {
     override lazy val string = parent.config.getString(name)
     override lazy val long = parent.config.getLong(name)
     override lazy val bool = parent.config.getBoolean(name)
+    override lazy val size = parent.config.getBytes(name).longValue()
 
     override def duration(unit: TimeUnit): Long = parent.config.getDuration(name, unit)
     
