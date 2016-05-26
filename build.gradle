@@ -100,6 +100,20 @@ test {
 
 task wrapper(type: Wrapper) { gradleVersion = "2.10" }
 
+task scalaDocJar(type: Jar, dependsOn: scaladoc) {
+    classifier = 'scaladoc'
+    from scaladoc.destinationDir
+}
+
+task sourcesJar(type: Jar) {
+    classifier = 'sources'
+    from sourceSets.main.allSource
+}
+
+artifacts {
+    archives scalaDocJar, sourcesJar
+}
+
 publishing {
     repositories {
         maven {
@@ -110,6 +124,12 @@ publishing {
     publications {
         maven(MavenPublication) {
             from components.java
+            artifact(scalaDocJar) {
+                classifier = 'scaladoc'
+            }
+            artifact(sourcesJar) {
+                classifier = 'sources'
+            }
         }
     }
 }
