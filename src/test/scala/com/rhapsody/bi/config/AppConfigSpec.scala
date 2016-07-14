@@ -131,6 +131,16 @@ class AppConfigSpec extends WordSpec with Matchers {
       }
     }
 
-  }
+    "get an array" when {
+      "element type is string" in {
+        appConf(
+          """
+            |my-app {
+            |  list = [ "a", "b" ]
+            |}
+          """.stripMargin).list.string should be(Seq("a", "b"))
+      }
+    }
 
+  }
 }

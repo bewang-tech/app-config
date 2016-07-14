@@ -120,6 +120,10 @@ publishing {
             name "rhapsody"
             url "http://maven01.internal.rhapsody.com/nexus/content/repositories/releases"
         }
+        credentials {
+            username "$mavenUser"
+            password "$mavenPassword"
+        }
     }
     publications {
         maven(MavenPublication) {
