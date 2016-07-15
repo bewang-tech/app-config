@@ -4,12 +4,23 @@ import java.util.concurrent.TimeUnit
 
 import com.typesafe.config.{Config, ConfigValueType}
 
+import scala.collection.JavaConverters._
 import scala.language.dynamics
-import scala.reflect.runtime.universe._
 
 class AppConfigException(msg: String) extends Exception(msg)
 
 trait AppConfig extends Dynamic {
+  def config: Config = error
+
+  def int: Int = error
+  def string: String = error
+  def long: Long = error
+  def bool: Boolean = error
+  def duration(unit: TimeUnit): Long = error
+  def size: Long = error
+
+  def strings: Seq[String] = error
+
   def parent: AppConfig
 
   def name: String
@@ -38,15 +49,17 @@ object AppConfig {
   def apply(name: String, config: Config) = Root(name, config.getConfig(name))
 
   case class Value(name: String, parent: ConfigObject) extends AppConfig {
-    def apply(field: String) = throw new AppConfigException(s"$path is a value, not an object")
+    override def apply(field: String) = throw new AppConfigException(s"$path is a value, not an object")
 
-    lazy val int = parent.config.getInt(name)
-    lazy val string = parent.config.getString(name)
-    lazy val long = parent.config.getLong(name)
-    lazy val bool = parent.config.getBoolean(name)
-    lazy val size = parent.config.getBytes(name).longValue
+    override lazy val int = parent.config.getInt(name)
+    override lazy val string = parent.config.getString(name)
+    override lazy val long = parent.config.getLong(name)
+    override lazy val bool = parent.config.getBoolean(name)
+    override lazy val size = parent.config.getBytes(name).longValue()
 
-    def duration(unit: TimeUnit): Long = parent.config.getDuration(name, unit)
+    override def duration(unit: TimeUnit): Long = parent.config.getDuration(name, unit)
+
+    override lazy val strings = parent.config.getStringList(name).asScala
   }
 
 //  case class Array(name: String, parent: Node) extends AppConfig {
@@ -54,8 +67,6 @@ object AppConfig {
 //  }
 
   trait ConfigObject extends AppConfig {
-    def config: Config
-
     def getField(field: String): AppConfig =
       if (config.hasPath(field)) {
         val valueType = config.getValue(field).valueType()
@@ -65,23 +76,22 @@ object AppConfig {
           case _ => new Value(field, this)
         }
       } else NonExistentValue(field, this)
-
   }
 
-  case class Node(name: String, parent: AppConfig, val config: Config) extends ConfigObject {
+  case class Node(name: String, parent: AppConfig, override val config: Config) extends ConfigObject {
     private[this] val fields = collection.mutable.Map[String, AppConfig]()
 
     override def apply(field: String) = fields.getOrElseUpdate(field, getField(field))
   }
 
-  case class Root(name: String, val config: Config) extends ConfigObject {
+  case class Root(name: String, override val config: Config) extends ConfigObject {
 
     override def parent = throw new AppConfigException(s"$name is a root.")
 
     override def apply(field: String) = getField(field)
   }
 
-  case class NonExistentValue(name: String, override val parent: AppConfig) extends AppConfig {
+  case class NonExistentValue(name: String, parent: AppConfig) extends AppConfig {
 
     override def apply(field: String) = error
 
