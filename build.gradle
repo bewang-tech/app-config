@@ -50,11 +50,8 @@ jar {
 }
 
 repositories {
-    mavenLocal()
-    mavenCentral()
     maven { url "http://maven01.internal.rhapsody.com/nexus/content/groups/public" }
     maven { url "http://rds-repo-dev-1201.sea2.rhapsody.com:8080/nexus/content/groups/public" }
-    maven { url "http://rds-repo-dev-1201.sea2.rhapsody.com:8080/nexus/content/groups/public-snapshots" }
 }
 
 dependencies {
