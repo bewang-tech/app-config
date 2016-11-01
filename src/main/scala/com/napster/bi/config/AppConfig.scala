@@ -1,48 +1,13 @@
-package com.rhapsody.bi.config
+package com.napster.bi.config
 
 import java.util.concurrent.TimeUnit
 
 import com.typesafe.config.{Config, ConfigValueType}
 
-import scala.collection.JavaConverters._
 import scala.language.dynamics
+import scala.collection.JavaConverters._
 
 class AppConfigException(msg: String) extends Exception(msg)
-
-trait AppConfig extends Dynamic {
-  def config: Config = error
-
-  def int: Int = error
-  def string: String = error
-  def long: Long = error
-  def bool: Boolean = error
-  def duration(unit: TimeUnit): Long = error
-  def size: Long = error
-
-  def strings: Seq[String] = error
-
-  def parent: AppConfig
-
-  def name: String
-
-  def apply(field: String): AppConfig
-
-  def applyDynamic(field: String)(subField: String) = {
-    apply(field).apply(subField)
-  }
-
-  def selectDynamic(field: String) = apply(field)
-
-  def path: String = {
-    val parentPath = parent match {
-      case AppConfig.Root(pname, _) => pname
-      case _ => parent.path
-    }
-    parentPath + "." + name
-  }
-
-  def error() = throw new AppConfigException(s"$path doesn't exist.")
-}
 
 object AppConfig {
 
@@ -97,4 +62,39 @@ object AppConfig {
 
   }
 
+}
+
+trait AppConfig extends Dynamic {
+  def config: Config = error
+
+  def int: Int = error
+  def string: String = error
+  def long: Long = error
+  def bool: Boolean = error
+  def duration(unit: TimeUnit): Long = error
+  def size: Long = error
+
+  def strings: Seq[String] = error
+
+  def parent: AppConfig
+
+  def name: String
+
+  def apply(field: String): AppConfig
+
+  def applyDynamic(field: String)(subField: String) = {
+    apply(field).apply(subField)
+  }
+
+  def selectDynamic(field: String) = apply(field)
+
+  def path: String = {
+    val parentPath = parent match {
+      case AppConfig.Root(pname, _) => pname
+      case _ => parent.path
+    }
+    parentPath + "." + name
+  }
+
+  def error() = throw new AppConfigException(s"$path doesn't exist.")
 }
