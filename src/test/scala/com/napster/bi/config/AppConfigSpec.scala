@@ -1,13 +1,10 @@
 package com.napster.bi.config
 
-import org.scalatest._
-import com.typesafe.config.ConfigFactory
-
-import collection.JavaConversions._
-import com.napster.bi.config.AppConfig._
 import java.util.concurrent.TimeUnit
 
-import com.napster.bi.config.AppConfig
+import com.napster.bi.config.AppConfig._
+import com.typesafe.config.ConfigFactory
+import org.scalatest._
 
 class AppConfigSpec extends WordSpec with Matchers {
 
