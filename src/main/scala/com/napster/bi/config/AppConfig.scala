@@ -2,13 +2,11 @@ package com.napster.bi.config
 
 import java.util.concurrent.TimeUnit
 
-import com.napster.bi.config.AppConfig.Root
 import com.typesafe.config.{Config, ConfigValueType}
 
-import scala.collection.JavaConverters._
 import scala.collection.JavaConversions._
+import scala.collection.JavaConverters._
 import scala.language.dynamics
-import scala.reflect.ClassTag
 
 class AppConfigException(msg: String) extends Exception(msg)
 
@@ -59,7 +57,7 @@ object NewAppConfig {
     }
 
     override def apply(key: String) =
-      throw new IllegalArgumentException(s"$path is a value which cannot have field $key.")
+      throw new NoSuchElementException(s"$path is a value which cannot have field $key.")
 
   }
 
@@ -84,8 +82,7 @@ object NewAppConfig {
       if (self.hasPath(key))
         cache.getOrElseUpdate(key, create(key))
       else
-        throw new IllegalArgumentException(s"Cannot find the key $key in $path.")
-
+        throw new NoSuchElementException(s"Cannot find the key $key in $path.")
   }
 
   implicit def node2Int(nd: Node): Int = nd.as[Int]
