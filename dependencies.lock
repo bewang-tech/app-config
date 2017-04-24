@@ -1,0 +1,164 @@
+{
+    "compile": {
+        "com.typesafe:config": {
+            "locked": "1.2.1",
+            "requested": "1.2.1"
+        },
+        "org.scala-lang:scala-library": {
+            "locked": "2.11.8",
+            "requested": "2.11.8"
+        },
+        "org.scala-lang:scala-reflect": {
+            "locked": "2.11.8",
+            "requested": "2.11.8"
+        }
+    },
+    "compileClasspath": {
+        "com.typesafe:config": {
+            "locked": "1.2.1",
+            "requested": "1.2.1"
+        },
+        "org.scala-lang:scala-library": {
+            "locked": "2.11.8",
+            "requested": "2.11.8"
+        },
+        "org.scala-lang:scala-reflect": {
+            "locked": "2.11.8",
+            "requested": "2.11.8"
+        }
+    },
+    "compileOnly": {
+        "com.typesafe:config": {
+            "locked": "1.2.1",
+            "requested": "1.2.1"
+        },
+        "org.scala-lang:scala-library": {
+            "locked": "2.11.8",
+            "requested": "2.11.8"
+        },
+        "org.scala-lang:scala-reflect": {
+            "locked": "2.11.8",
+            "requested": "2.11.8"
+        }
+    },
+    "default": {
+        "com.typesafe:config": {
+            "locked": "1.2.1",
+            "requested": "1.2.1"
+        },
+        "org.scala-lang:scala-library": {
+            "locked": "2.11.8",
+            "requested": "2.11.8"
+        },
+        "org.scala-lang:scala-reflect": {
+            "locked": "2.11.8",
+            "requested": "2.11.8"
+        }
+    },
+    "runtime": {
+        "com.typesafe:config": {
+            "locked": "1.2.1",
+            "requested": "1.2.1"
+        },
+        "org.scala-lang:scala-library": {
+            "locked": "2.11.8",
+            "requested": "2.11.8"
+        },
+        "org.scala-lang:scala-reflect": {
+            "locked": "2.11.8",
+            "requested": "2.11.8"
+        }
+    },
+    "testCompile": {
+        "com.typesafe:config": {
+            "locked": "1.2.1",
+            "requested": "1.2.1"
+        },
+        "org.scala-lang:scala-library": {
+            "locked": "2.11.8",
+            "requested": "2.11.8"
+        },
+        "org.scala-lang:scala-reflect": {
+            "locked": "2.11.8",
+            "requested": "2.11.8"
+        },
+        "org.scalacheck:scalacheck_2.11": {
+            "locked": "1.12.5",
+            "requested": "1.12.5"
+        },
+        "org.scalatest:scalatest_2.11": {
+            "locked": "2.2.6",
+            "requested": "2.2.6"
+        }
+    },
+    "testCompileClasspath": {
+        "com.typesafe:config": {
+            "locked": "1.2.1",
+            "requested": "1.2.1"
+        },
+        "org.scala-lang:scala-library": {
+            "locked": "2.11.8",
+            "requested": "2.11.8"
+        },
+        "org.scala-lang:scala-reflect": {
+            "locked": "2.11.8",
+            "requested": "2.11.8"
+        },
+        "org.scalacheck:scalacheck_2.11": {
+            "locked": "1.12.5",
+            "requested": "1.12.5"
+        },
+        "org.scalatest:scalatest_2.11": {
+            "locked": "2.2.6",
+            "requested": "2.2.6"
+        }
+    },
+    "testCompileOnly": {
+        "com.typesafe:config": {
+            "locked": "1.2.1",
+            "requested": "1.2.1"
+        },
+        "org.scala-lang:scala-library": {
+            "locked": "2.11.8",
+            "requested": "2.11.8"
+        },
+        "org.scala-lang:scala-reflect": {
+            "locked": "2.11.8",
+            "requested": "2.11.8"
+        },
+        "org.scalacheck:scalacheck_2.11": {
+            "locked": "1.12.5",
+            "requested": "1.12.5"
+        },
+        "org.scalatest:scalatest_2.11": {
+            "locked": "2.2.6",
+            "requested": "2.2.6"
+        }
+    },
+    "testRuntime": {
+        "com.typesafe:config": {
+            "locked": "1.2.1",
+            "requested": "1.2.1"
+        },
+        "org.pegdown:pegdown": {
+            "locked": "1.1.0",
+            "requested": "1.1.0"
+        },
+        "org.scala-lang:scala-library": {
+            "locked": "2.11.8",
+            "requested": "2.11.8"
+        },
+        "org.scala-lang:scala-reflect": {
+            "locked": "2.11.8",
+            "requested": "2.11.8"
+        },
+        "org.scalacheck:scalacheck_2.11": {
+            "locked": "1.12.5",
+            "requested": "1.12.5"
+        },
+        "org.scalatest:scalatest_2.11": {
+            "locked": "2.2.6",
+            "requested": "2.2.6"
+        }
+    }
+}
