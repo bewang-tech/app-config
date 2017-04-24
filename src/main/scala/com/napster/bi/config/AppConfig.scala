@@ -9,7 +9,7 @@ class AppConfigException(msg: String) extends Exception(msg)
 
 object AppConfig {
 
-  def apply(name: String, config: Config): Node = Container(name, "", config.getConfig(name))
+  def apply(name: String, config: Config): Node = Container(name, "", config)
 
   type ConfigReader[T] = Function2[String, Config, T]
 
@@ -19,6 +19,8 @@ object AppConfig {
   implicit val longReader: ConfigReader[Long] = (path, config) => config.getLong(path)
   implicit val doubleReader: ConfigReader[Double] = (path, config) => config.getDouble(path)
   implicit val floatReader: ConfigReader[Float] = (path, config) => config.getDouble(path).toFloat
+
+  implicit val configReader: ConfigReader[Config] = (path, config) => config.getConfig(path)
 
   implicit val intSeqReader: ConfigReader[Seq[Int]] = (path, config) => config.getIntList(path).map(_.intValue)
   implicit val stringSeqReader: ConfigReader[Seq[String]] = (path, config) => config.getStringList(path)
@@ -54,7 +56,8 @@ object AppConfig {
 
   }
 
-  case class Container(name: String, path: String, self: Config) extends Node {
+  case class Container(name: String, path: String, parent: Config) extends Node {
+    private[this] val self = parent.getConfig(name)
 
     private[this] val cache = collection.mutable.Map[String, Node]()
 
@@ -63,7 +66,7 @@ object AppConfig {
 
     override def as[T: ConfigReader]: T = {
       val reader = implicitly[ConfigReader[T]]
-      reader(name, self)
+      reader(name, parent)
     }
 
     override def asOption[T: ConfigReader]: Option[T] =
@@ -71,7 +74,7 @@ object AppConfig {
 
     private def create(key: String, childPath: String) =
       if (isObject(key))
-        Container(key, childPath, self.getConfig(key))
+        Container(key, childPath, self)
       else
         Value(key, childPath, self)
 

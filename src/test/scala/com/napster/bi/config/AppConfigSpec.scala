@@ -1,6 +1,6 @@
 package com.napster.bi.config
 
-import com.typesafe.config.{ConfigException, ConfigFactory}
+import com.typesafe.config.{Config, ConfigException, ConfigFactory, ConfigValueFactory}
 import org.scalatest._
 
 class AppConfigSpec extends WordSpec with Matchers {
@@ -134,6 +134,12 @@ class AppConfigSpec extends WordSpec with Matchers {
           Seq("host1", "host2", "host3")
         )
       }
+    }
+
+    "read as Config" in {
+      appConf("my-app { settings { baseDir = /data/my-app } }").settings.as[Config] should be(
+        ConfigFactory.empty().withValue("baseDir", ConfigValueFactory.fromAnyRef("/data/my-app"))
+      )
     }
 
     "raise exception" when {
