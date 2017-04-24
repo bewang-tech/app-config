@@ -1,6 +1,6 @@
 package com.napster.bi.config
 
-import com.typesafe.config.ConfigFactory
+import com.typesafe.config.{ConfigException, ConfigFactory}
 import org.scalatest._
 
 class AppConfigSpec extends WordSpec with Matchers {
@@ -122,5 +122,34 @@ class AppConfigSpec extends WordSpec with Matchers {
         appConf("my-app { age: 18 }").age.asOption[Int] should be(Some(18))
       }
     }
+
+    "read a list of values" when {
+      "a list of ints" in {
+        appConf("my-app { ages = [ 13, 15, 17, 19 ] }").ages.as[Seq[Int]] should be(
+          Seq(13, 15, 17, 19)
+        )
+      }
+      "a list of strings" in {
+        appConf("my-app { hosts = [ host1, host2, host3 ] }").hosts.as[Seq[String]] should be(
+          Seq("host1", "host2", "host3")
+        )
+      }
+    }
+
+    "raise exception" when {
+      "reading as wrong type" when {
+        "reading a list from a config" in {
+          a[ConfigException] should be thrownBy {
+            appConf("my-app { settings { baseDir = /data/my-app} }").settings.as[Seq[String]]
+          }
+        }
+        "reading a list from a value" in {
+          a[ConfigException] should be thrownBy {
+            appConf("my-app { host = napster.com }").host.as[Seq[String]]
+          }
+        }
+      }
+    }
   }
+
 }

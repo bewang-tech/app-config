@@ -2,6 +2,7 @@ package com.napster.bi.config
 
 import com.typesafe.config.{Config, ConfigValueType}
 
+import scala.collection.JavaConversions._
 import scala.language.{dynamics, implicitConversions}
 
 class AppConfigException(msg: String) extends Exception(msg)
@@ -18,6 +19,13 @@ object AppConfig {
   implicit val longReader: ConfigReader[Long] = (path, config) => config.getLong(path)
   implicit val doubleReader: ConfigReader[Double] = (path, config) => config.getDouble(path)
   implicit val floatReader: ConfigReader[Float] = (path, config) => config.getDouble(path).toFloat
+
+  implicit val intSeqReader: ConfigReader[Seq[Int]] = (path, config) => config.getIntList(path).map(_.intValue)
+  implicit val stringSeqReader: ConfigReader[Seq[String]] = (path, config) => config.getStringList(path)
+  implicit val boolSeqReader: ConfigReader[Seq[Boolean]] = (path, config) => config.getBooleanList(path).map(_.booleanValue())
+  implicit val longSeqReader: ConfigReader[Seq[Long]] = (path, config) => config.getLongList(path).map(_.longValue())
+  implicit val doubleSeqReader: ConfigReader[Seq[Double]] = (path, config) => config.getDoubleList(path).map(_.doubleValue())
+  implicit val floatSeqReader: ConfigReader[Seq[Float]] = (path, config) => config.getDoubleList(path).map(_.toFloat)
 
   trait Node extends Dynamic {
 
