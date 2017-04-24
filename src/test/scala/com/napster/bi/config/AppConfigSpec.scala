@@ -8,139 +8,68 @@ class AppConfigSpec extends WordSpec with Matchers {
   "AppConfig" should {
 
     def appConf(config: String, rootName: String = "my-app") = {
-      NewAppConfig(rootName, ConfigFactory.parseString(config))
+      AppConfig(rootName, ConfigFactory.parseString(config))
     }
 
-    "get a config value" when {
-      "the value is String" in {
-        appConf("my-app { country = US }").country.string should be("US")
-      }
-      "the value is Int" in {
-        //        def plus5(age: Int) = age + 5
-        //        plus5(appConf("my-app { age = 23 }").age) should be(23)
-        //
-        appConf("my-app { age = 23 }").age * 3L should be(66)
-      }
-      "the value is Long" in {
-        appConf("my-app { population = 15 }").population.long should be(15L)
-      }
-      //      "the value is Boolean" in {
-      //        appConf("my-app { isMale = false }").isMale.bool should be(false)
-      //      }
-      //      "the value is Duration" in {
-      //        appConf("my-app { interval = 5m }").interval.duration(TimeUnit.SECONDS) should be(300)
-      //      }
-      //      "the value is Size" in {
-      //        appConf("my-app { maxSize = 5m }").maxSize.size should be(5 * 1024 * 1024)
-      //      }
-      //      "the value is a list of strings" in {
-      //        val result = appConf("my-app { topics = [ topic-1, topic-2 ] }").topics.strings
-      //        result should contain allOf("topic-1", "topic-2")
-      //      }
-      //      "the key is not valid identifier" in {
-      //        appConf("my-app { is-male = false }")("is-male").bool should be(false)
-      //      }
+    import AppConfig._
 
-    }
+    "get a primitive type config value" which {
+      "is a Boolean value" when {
+        val required = appConf("my-app { required = true }").required
+        "using .as[Boolean]" in {
+          required.as[Boolean] should be(true)
+        }
+        "using .bool" in {
+          required.bool should be(true)
+        }
+        "passing to a function" in {
+          def f(in: Boolean) = in
 
-    "get a nested config value" when {
-      "the value is String" in {
-        appConf(
-          """my-app {
-          country {
-            US {
-              WA {
-                region = NW
-              }
-            }
-          }
-        }""").country.US.WA.region.string should be("NW")
+          f(required) should be(true)
+        }
       }
-      "the value is Int" in {
-        appConf(
-          """my-app {
-          year {
-            artists {
-              join.task {
-                nparts = 15
-              }
-            }
-          }
-        }""").year.artists.join.task.nparts.int should be(15)
-      }
-      "the value is Long" in {
-        appConf(
-          """my-app {
-          country {
-            US {
-              WA {
-                population = 15
-              }
-            }
-          }
-        }""").country.US.WA.population.long should be(15L)
-      }
-      //      "the value is Boolean" in {
-      //        appConf(
-      //          """my-app {
-      //          year {
-      //            artists {
-      //              recompute = false
-      //            }
-      //          }
-      //        }""").year.artists.recompute.bool should be(false)
-      //      }
-    }
+      "is an Int value" when {
+        val age = appConf("my-app { age = 16 }").age
+        "using .as[Int]" in {
+          age.as[Int] should be(16)
+        }
+        "using .int" in {
+          age.int should be(16)
+        }
+        "passing to a function" in {
+          def f(in: Int) = in
 
-    //    "return NonExistentValue" when {
-    //      val nonExistentKey = "non-existent-key"
-    //      "the field name doesn't exist" in {
-    //        val conf = appConf("my-app {}")
-    //        conf(nonExistentKey) should be(NonExistentValue(nonExistentKey, conf))
-    //      }
-    //      "the nested field doesn't exist" in {
-    //        an[AppConfigException] should be thrownBy
-    //          appConf(
-    //            """my-app {
-    //            country {
-    //              US {
-    //                north-west {
-    //                  WA = 1
-    //                }
-    //              }
-    //            }
-    //          }""").country.US("north-west").FL.int
-    //      }
-    //    }
-
-    "get the path" when {
-      "there is only one level" in {
-        appConf("my-app { country = US }").country.path should be("my-app.country")
+          f(age) should be(16)
+        }
       }
-      "the config is nested" in {
-        appConf(
-          """my-app {
-          year {
-            artists {
-              join.task {
-                nparts = 15
-              }
-            }
-          }
-        }""").year.artists.join.task.nparts.path should be("my-app.year.artists.join.task.nparts")
+      "is a String value" when {
+        val country = appConf("my-app { country = US }").country
+        "using .as[String]" in {
+          country.as[String] should be("US")
+        }
+        "using .string" in {
+          country.string should be("US")
+        }
+        "passing to a function" in {
+          def f(in: String) = in
+
+          f(country) should be("US")
+        }
+      }
+      "is an Long value" when {
+        val count = appConf("my-app { count = 9999 }").count
+        "using .as[Long]" in {
+          count.as[Long] should be(9999L)
+        }
+        "using .long" in {
+          count.long should be(9999L)
+        }
+        "passing to a function" in {
+          def f(in: Long) = in
+
+          f(count) should be(9999L)
+        }
       }
     }
-
-    //    "get an array" when {
-    //      "element type is string" in {
-    //        appConf(
-    //          """
-    //            |my-app {
-    //            |  list = [ "a", "b" ]
-    //            |}
-    //          """.stripMargin).list.seq[String] should be(Seq("a", "b"))
-    //      }
-    //    }
-
   }
 }
