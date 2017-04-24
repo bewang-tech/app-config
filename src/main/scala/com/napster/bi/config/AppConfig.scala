@@ -10,7 +10,14 @@ object AppConfig {
 
   def apply(name: String, config: Config): Node = Container(name, "", config.getConfig(name))
 
-  import ConfigReaders._
+  type ConfigReader[T] = Function2[String, Config, T]
+
+  implicit val intReader: ConfigReader[Int] = (path, config) => config.getInt(path)
+  implicit val stringReader: ConfigReader[String] = (path, config) => config.getString(path)
+  implicit val boolReader: ConfigReader[Boolean] = (path, config) => config.getBoolean(path)
+  implicit val longReader: ConfigReader[Long] = (path, config) => config.getLong(path)
+  implicit val doubleReader: ConfigReader[Double] = (path, config) => config.getDouble(path)
+  implicit val floatReader: ConfigReader[Float] = (path, config) => config.getDouble(path).toFloat
 
   trait Node extends Dynamic {
 
@@ -19,6 +26,8 @@ object AppConfig {
     def selectDynamic(key: String): Node = apply(key)
 
     def as[T: ConfigReader]: T
+
+    def asOption[T: ConfigReader]: Option[T]
 
   }
 
@@ -29,8 +38,11 @@ object AppConfig {
       reader(name, parent)
     }
 
+    override def asOption[T: ConfigReader]: Option[T] =
+      Some(as[T])
+
     override def apply(key: String) =
-      throw new NoSuchElementException(s"$path is a value which cannot have field $key.")
+      NonExistNode(key, s"$path.$key", parent)
 
   }
 
@@ -41,21 +53,37 @@ object AppConfig {
     private def isObject(key: String) =
       self.getValue(key).valueType() == ConfigValueType.OBJECT
 
-    override def as[T: ConfigReader]: T = self.asInstanceOf[T]
+    override def as[T: ConfigReader]: T = {
+      val reader = implicitly[ConfigReader[T]]
+      reader(name, self)
+    }
 
-    private def create(key: String) = {
-      val childPath = s"$path.$key"
+    override def asOption[T: ConfigReader]: Option[T] =
+      Some(as[T])
+
+    private def create(key: String, childPath: String) =
       if (isObject(key))
         Container(key, childPath, self.getConfig(key))
       else
         Value(key, childPath, self)
-    }
 
-    override def apply(key: String): Node =
+    override def apply(key: String): Node = {
+      val childPath = s"$path.$key"
       if (self.hasPath(key))
-        cache.getOrElseUpdate(key, create(key))
+        cache.getOrElseUpdate(key, create(key, childPath))
       else
-        throw new NoSuchElementException(s"Cannot find the key $key in $path.")
+        NonExistNode(key, childPath, self)
+    }
+  }
+
+  case class NonExistNode(name: String, path: String, parent: Config) extends Node {
+    override def as[T: ConfigReader]: T =
+      throw new NoSuchElementException(s"$path doesn't exist")
+
+    override def asOption[T: ConfigReader]: Option[T] = None
+
+    override def apply(key: String) =
+      NonExistNode(key, s"$path.$key", parent)
   }
 
   implicit class Node2TypedValue(nd: Node) {

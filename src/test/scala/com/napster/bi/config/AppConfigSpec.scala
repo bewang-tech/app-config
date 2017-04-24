@@ -70,6 +70,57 @@ class AppConfigSpec extends WordSpec with Matchers {
           f(count) should be(9999L)
         }
       }
+      "is an Float value" when {
+        val value: Float = 0.123456789f
+        val weight = appConf(s"my-app { weight = $value }").weight
+
+        "using .as[Float]" in {
+          weight.as[Float] should be(value)
+        }
+        "using .float" in {
+          weight.float should be(value)
+        }
+        "passing to a function" in {
+          def f(in: Float) = in
+
+          f(weight) should be(value)
+        }
+      }
+      "is an Double value" when {
+        val value = 0.123456789d
+        val weight = appConf(s"my-app { weight = $value }").weight
+
+        "using .as[Double]" in {
+          weight.as[Double] should be(value)
+        }
+        "using .double" in {
+          weight.double should be(value)
+        }
+        "passing to a function" in {
+          def f(in: Double) = in
+
+          f(weight) should be(value)
+        }
+      }
+    }
+
+    "return None" when {
+      "the path doesn't exist" when {
+        "only one level" in {
+          appConf("my-app { }").nonExistValue.asOption[Int] should be(None)
+        }
+        "multiple levels" in {
+          appConf("my-app { }").nonExistLevel1.nonExistLevel2.nonExistValue.asOption[Int] should be(None)
+        }
+        "a level is a value, not an object" in {
+          appConf("my-app { count = 15 }").count.nonExistLevel2.nonExistValue.asOption[Int] should be(None)
+        }
+      }
+    }
+    "return Some(value)" when {
+      "the path exists" in {
+        appConf("my-app { age: 18 }").age.asOption[Int] should be(Some(18))
+      }
     }
   }
 }
