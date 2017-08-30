@@ -59,7 +59,10 @@ test {
     workingDir testWorkingDir
 }
 
-task wrapper(type: Wrapper) { gradleVersion = "3.3" }
+task wrapper(type: Wrapper) {
+    gradleVersion = "3.3"
+    distributionType = "ALL"
+}
 
 task scalaDocJar(type: Jar, dependsOn: scaladoc) {
     classifier = 'scaladoc'
