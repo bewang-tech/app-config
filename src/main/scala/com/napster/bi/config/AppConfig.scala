@@ -7,6 +7,8 @@ import scala.language.{dynamics, implicitConversions}
 
 class AppConfigException(msg: String) extends Exception(msg)
 
+trait AppConfig
+
 object AppConfig {
 
   def apply(name: String, config: Config): Node = Container(name, "", config)
@@ -29,7 +31,7 @@ object AppConfig {
   implicit val doubleSeqReader: ConfigReader[Seq[Double]] = (path, config) => config.getDoubleList(path).map(_.doubleValue())
   implicit val floatSeqReader: ConfigReader[Seq[Float]] = (path, config) => config.getDoubleList(path).map(_.toFloat)
 
-  trait Node extends Dynamic {
+  trait Node extends AppConfig with Dynamic {
 
     def apply(key: String): Node
 
