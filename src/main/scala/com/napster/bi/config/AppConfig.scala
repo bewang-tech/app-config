@@ -111,16 +111,6 @@ object AppConfig {
     def float: Float = nd.as[Float]
   }
 
-  implicit def node2Int(nd: AppConfig): Int = nd.as[Int]
-
-  implicit def node2String(nd: AppConfig): String = nd.as[String]
-
-  implicit def node2Boolean(nd: AppConfig): Boolean = nd.as[Boolean]
-
-  implicit def node2Long(nd: AppConfig): Long = nd.as[Long]
-
-  implicit def node2Double(nd: AppConfig): Double = nd.as[Double]
-
-  implicit def node2Float(nd: AppConfig): Float = nd.as[Float]
+  implicit def node2[T](nd: AppConfig): T = nd.as[T]
 
 }
