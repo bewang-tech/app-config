@@ -17,6 +17,8 @@ trait AppConfig extends Dynamic {
 
   def asOption[T: AppConfig.Read]: Option[T]
 
+  def getOrElse[T: AppConfig.Read](default: T): T = asOption[T].getOrElse(default)
+
 }
 
 object AppConfig {
